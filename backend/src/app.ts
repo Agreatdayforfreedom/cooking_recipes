@@ -1,10 +1,13 @@
 import express from "express";
-
+import authRouter from "./routes/auth.route";
 const app = express();
 
 app.use(express.json());
 
-app.use("healt", async (_req, res) => {
+//todo: move base url to a config file
+app.use("/", authRouter);
+
+app.use("health", async (_req, res) => {
   res.sendStatus(200);
 });
 
