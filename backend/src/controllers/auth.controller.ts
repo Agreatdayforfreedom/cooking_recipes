@@ -27,7 +27,7 @@ export const signin = async (req: Request, res: Response) => {
       return res.json({ error: "Incorrect password" });
     }
 
-    const { password: omit_password, ...rest } = userExists;
+    const { password: _, ...rest } = userExists;
 
     return res.json({
       message: "User logged in successfully",
@@ -55,7 +55,7 @@ export const signup = async (req: Request, res: Response) => {
     const passwordHash = await bcrypt.hash(password, salt);
     const user = await prisma.user.create({ data: { email, lastname, name, password: passwordHash } });
 
-    const { password: omit_password, ...rest } = user;
+    const { password: _, ...rest } = user;
 
     return res.json({
       message: "User created successfully",

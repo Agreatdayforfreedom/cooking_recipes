@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm dlx tsx watch ./src/index.ts"
+    "dev": "pnpm dlx tsx watch ./src/index.ts",
+    "lint": "pnpm dlx eslint"
   },
   "keywords": [],
   "author": "",
@@ -15,14 +16,19 @@
     "@types/jsonwebtoken": "^9.0.7",
     "bcrypt": "^5.1.1",
     "express": "^4.21.2",
+    "husky": "^9.1.7",
     "jsonwebtoken": "^9.0.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.18.0",
     "@types/express": "^4.17.21",
     "@types/node": "^22.10.6",
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
     "prisma": "^6.2.1",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0"
   }
 }
