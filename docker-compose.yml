@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+    restart: always
+    volumes:
+      - "./backend:/app"
+      - "/app/node_modules"
+    command: pnpm run dev
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=postgresql://postgres:root@postgres:5432/recipes?schema=public
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=root
