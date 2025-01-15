@@ -7,7 +7,7 @@ app.use(express.json());
 //todo: move base url to a config file
 app.use("/", authRouter);
 
-app.use("health", async (_req, res) => {
+app.use("/health", async (_req, res) => {
   res.sendStatus(200);
 });
 

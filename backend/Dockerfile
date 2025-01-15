@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:lts-alpine
 
 WORKDIR /app
 
@@ -13,3 +13,4 @@ RUN pnpm dlx prisma generate
 
 COPY . .
 
+EXPOSE 4000
