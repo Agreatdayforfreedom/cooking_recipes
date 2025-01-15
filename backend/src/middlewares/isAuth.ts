@@ -29,7 +29,7 @@ const isAuth = async (req: Request, res: Response, next: NextFunction) => {
     if (bearer && bearer.toLowerCase().startsWith("bearer")) {
       token = bearer.split(" ")[1];
 
-      const payload = jwt.verify(token, "secret") as IPayload;
+      const payload = jwt.verify(token, process.env.JWT_SECRET as string) as IPayload;
 
       req.user = (await prisma.user.findFirst({
         where: {

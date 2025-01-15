@@ -49,7 +49,7 @@ describe("auth", () => {
       expect(status).toBe(200);
 
       expect(body).toHaveProperty("token"); // fix controller
-      expect(jwt.verify(body.token, "secret" as string));
+      expect(jwt.verify(body.token, process.env.JWT_SECRET as string));
     });
 
     it("should respond with 400 if the email is already registered", async () => {
@@ -115,7 +115,7 @@ describe("auth", () => {
       });
 
       expect(body).toHaveProperty("token");
-      expect(jwt.verify(body.token, "secret" as string));
+      expect(jwt.verify(body.token, process.env.JWT_SECRET as string));
     });
 
     it("should respond with a 400 status code if invalid credentials were provided", async () => {
