@@ -9,7 +9,7 @@ export const signin = async (req: Request, res: Response) => {
   const data = signinSchema.safeParse(req.body);
 
   if (!data.success) {
-    return res.json({ error: "Validation failed", details: data.error.errors });
+    return res.status(400).json({ error: "Validation failed", details: data.error.errors });
   }
   try {
     const { email, password } = data.data;
@@ -20,11 +20,11 @@ export const signin = async (req: Request, res: Response) => {
     });
 
     if (!userExists) {
-      return res.json({ error: "Invalid email" });
+      return res.status(400).json({ error: "Invalid email" });
     }
 
     if (!(await bcrypt.compare(password, userExists.password))) {
-      return res.json({ error: "Incorrect password" });
+      return res.status(400).json({ error: "Incorrect password" });
     }
 
     const { password: _, ...rest } = userExists;
@@ -33,11 +33,11 @@ export const signin = async (req: Request, res: Response) => {
       message: "User logged in successfully",
       user: {
         ...rest,
-        token: signToken({ id: userExists.id }),
       },
+      token: signToken({ id: userExists.id }),
     });
   } catch (error) {
-    res.json({ error: "An unexpected error occurred" });
+    res.status(500).json({ error: "An unexpected error occurred" });
   }
 };
 
@@ -45,7 +45,7 @@ export const signup = async (req: Request, res: Response) => {
   const data = signupSchema.safeParse(req.body);
 
   if (!data.success) {
-    return res.json({ error: "Validation failed", details: data.error.errors });
+    return res.status(400).json({ error: "Validation failed", details: data.error.errors });
   }
 
   const { name, lastname, email, password } = data.data;
@@ -61,17 +61,18 @@ export const signup = async (req: Request, res: Response) => {
       message: "User created successfully",
       user: {
         ...rest,
-        token: signToken({ id: user.id }),
       },
+      token: signToken({ id: user.id }),
     });
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === "P2002") {
-        res.json({ error: "Email is already in use" });
+        res.status(400).json({ error: "Email is already in use" });
       } else {
-        res.json({ error: "An unexpected database error occurred" });
+        res.status(500).json({ error: "An unexpected database error occurred" });
       }
+      return;
     }
-    res.json({ error: "An unexpected error occurred" });
+    res.status(500).json({ error: "An unexpected error occurred" });
   }
 };

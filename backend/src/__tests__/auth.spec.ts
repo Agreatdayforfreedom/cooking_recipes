@@ -17,8 +17,6 @@ describe("auth", () => {
         confirmPassword: "Testpassword1",
       });
 
-      console.log(body);
-
       const newUser = await prisma.user.findUnique({
         where: {
           email: "lol@gmail.com",
@@ -28,12 +26,11 @@ describe("auth", () => {
       expect(status).toBe(200);
 
       expect(newUser).not.toBeNull();
-      console.log(body);
       expect(body.user).toStrictEqual({
-        //FIX CONTROLLERS
-        name: "testusername",
-        email: "lol@gmail.com",
-        lastanme: "test",
+        name: newUser?.name,
+        email: newUser?.email,
+        lastname: newUser?.lastname,
+        id: newUser?.id,
       });
     });
 
@@ -65,8 +62,8 @@ describe("auth", () => {
         .send({ ...data, confirmPassword: "Testpassword1" });
 
       expect(status).toBe(400);
-      expect(body).toHaveProperty("message");
-      expect(body.message).toBeDefined();
+      expect(body).toHaveProperty("error");
+      expect(body.error).toBeDefined();
     });
   });
 
@@ -105,7 +102,7 @@ describe("auth", () => {
 
       let keys = Object.keys(body.user);
       expect(keys.length).toBe(4);
-      expect(keys).toContainEqual(["id", "name", "lastname", "email"]);
+      expect(keys).toStrictEqual(["id", "name", "lastname", "email"]);
     });
 
     it("should respond with a valid token", async () => {
@@ -120,7 +117,7 @@ describe("auth", () => {
 
     it("should respond with a 400 status code if invalid credentials were provided", async () => {
       const { status, body } = await request(app).post("/signin").send({
-        email: data.email,
+        email: "invalid@gmail.com",
         password: data.password,
       });
 
