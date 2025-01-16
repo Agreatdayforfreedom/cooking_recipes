@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Utensils } from "lucide-react";
 import { Link } from "react-router";
 import { useState } from "react";
-import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import { signinSchema } from "@/schemas/auth";
 import { useAuth } from "@/stores/auth";
+import { api } from "@/lib/api";
 
 export const LoginPage = () => {
   const setUser = useAuth((state) => state.setUser);
@@ -35,7 +35,7 @@ export const LoginPage = () => {
 
   const onSubmit = async (values: z.infer<typeof signinSchema>) => {
     setPending(true);
-    const response = await axios.post("http://localhost:4000/signin", values);
+    const response = await api.post("/signin", values);
     localStorage.setItem("token", response.data.token as string);
     setUser(response.data.user);
     setPending(false);

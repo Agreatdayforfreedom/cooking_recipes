@@ -2,7 +2,6 @@ import { z } from "zod";
 import { Utensils } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router";
 
@@ -19,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import { signupSchema } from "@/schemas/auth";
 import { useAuth } from "@/stores/auth";
+import { api } from "@/lib/api";
 
 const SignupPage = () => {
   const [isPending, setPending] = useState(false);
@@ -38,7 +38,7 @@ const SignupPage = () => {
 
   const onSubmit = async (values: z.infer<typeof signupSchema>) => {
     setPending(true);
-    const response = await axios.post("http://localhost:4000/signup", values);
+    const response = await api.post("/signup", values);
     localStorage.setItem("token", response.data.token as string);
     setUser(response.data.user);
     setPending(false);
