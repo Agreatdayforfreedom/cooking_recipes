@@ -2,7 +2,7 @@ import express from "express";
 import { getAll, getOne, getOwn, createOne, updateOne, deleteOne } from "../controllers/recipes.controller";
 import isAuth from "../middlewares/isAuth";
 
-const router = express();
+const router = express.Router();
 
 router.get("/", getAll);
 

@@ -55,7 +55,7 @@ export const createOne = async (req: Request, res: Response) => {
   const data = createRecipeSchema.safeParse(req.body);
 
   if (!data.success) {
-    return res.json({ error: "Validation failed", details: data.error.errors });
+    return res.status(400).json({ error: "Validation failed", details: data.error.errors });
   }
 
   const { title, description, ingredients } = data.data;
@@ -80,7 +80,7 @@ export const updateOne = async (req: Request, res: Response) => {
   const data = updateRecipeSchema.safeParse(req.body);
 
   if (!data.success) {
-    return res.json({ error: "Validation failed", details: data.error.errors });
+    return res.status(400).json({ error: "Validation failed", details: data.error.errors });
   }
 
   try {
