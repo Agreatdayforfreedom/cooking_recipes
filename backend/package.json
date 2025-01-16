@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "pnpm dlx tsx watch ./src/index.ts",
     "lint": "pnpm dlx eslint",
-    "test": "./integration-test.sh"
+    "test": "./integration-test.sh",
+    "test:once": "./integration-test.sh --once"
   },
   "keywords": [],
   "author": "",

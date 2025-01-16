@@ -1,0 +1,3 @@
+cd backend
+pnpm run test:once
+pnpm run lint

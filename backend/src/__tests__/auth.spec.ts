@@ -26,12 +26,14 @@ describe("auth", () => {
       expect(status).toBe(200);
 
       expect(newUser).not.toBeNull();
-      expect(body.user).toStrictEqual({
-        name: newUser?.name,
-        email: newUser?.email,
-        lastname: newUser?.lastname,
-        id: newUser?.id,
-      });
+      expect(body.user).toEqual(
+        expect.objectContaining({
+          name: newUser?.name,
+          email: newUser?.email,
+          lastname: newUser?.lastname,
+          id: newUser?.id,
+        }),
+      );
     });
 
     it("should respond with an access token", async () => {
@@ -101,8 +103,8 @@ describe("auth", () => {
       });
 
       let keys = Object.keys(body.user);
-      expect(keys.length).toBe(4);
-      expect(keys).toStrictEqual(["id", "name", "lastname", "email"]);
+      expect(keys.length).toBe(5);
+      expect(keys).toStrictEqual(["id", "name", "lastname", "email", "created_at"]);
     });
 
     it("should respond with a valid token", async () => {
