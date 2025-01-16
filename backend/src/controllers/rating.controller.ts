@@ -16,6 +16,7 @@ export const addRating = async (req: Request, res: Response) => {
     const ratingExists = await prisma.ratings.findFirst({
       where: {
         userId: req.user.id,
+        recipeId,
       },
     });
 

@@ -5,9 +5,33 @@ import { createRecipeSchema, updateRecipeSchema } from "../schemas/recipe";
 
 export const getAll = async (_req: Request, res: Response) => {
   try {
-    const recipes = await prisma.recipes.findMany();
+    const recipes = await prisma.recipes.findMany({
+      include: {
+        ratings: true,
 
-    return res.json({ recipes });
+        _count: {
+          select: {
+            ratings: true,
+          },
+        },
+      },
+    });
+
+    const recipesWithAvg = recipes.map((recipe) => {
+      const avg =
+        recipe.ratings.reduce((acc: number, curr) => {
+          return acc + curr.rating;
+        }, 0) / recipe.ratings.length;
+
+      //exclude rating because they aren't used in the front
+      const { ratings: _, ...recipeWithoutRating } = recipe;
+      return {
+        ...recipeWithoutRating,
+        avg_rating: avg,
+      };
+    });
+
+    return res.json({ recipes: recipesWithAvg });
   } catch {
     return res.status(500).json({ error: "An unexpected error occurred" });
   }
@@ -24,14 +48,28 @@ export const getOne = async (req: Request, res: Response) => {
             password: true,
           },
         },
+        ratings: true,
+        _count: {
+          select: {
+            ratings: true,
+          },
+        },
       },
     });
 
     if (!recipe) {
       return res.status(404).json({ error: "Recipe not found" });
     }
+    const avg = recipe.ratings.reduce((acc: number, curr) => {
+      return acc + curr.rating;
+    }, 0);
 
-    return res.json({ recipe });
+    return res.json({
+      recipe: {
+        ...recipe,
+        avg_rating: avg / recipe.ratings.length,
+      },
+    });
   } catch {
     return res.status(500).json({ error: "An unexpected error occurred" });
   }
@@ -43,9 +81,31 @@ export const getOwn = async (req: Request, res: Response) => {
       where: {
         userId: req.user.id,
       },
+      include: {
+        ratings: true,
+
+        _count: {
+          select: {
+            ratings: true,
+          },
+        },
+      },
     });
 
-    return res.json({ recipes });
+    const recipesWithAvg = recipes.map((recipe) => {
+      const avg =
+        recipe.ratings.reduce((acc: number, curr) => {
+          return acc + curr.rating;
+        }, 0) / recipe.ratings.length;
+
+      const { ratings: _, ...recipeWithoutRating } = recipe;
+      return {
+        ...recipeWithoutRating,
+        avg_rating: avg,
+      };
+    });
+
+    return res.json({ recipes: recipesWithAvg });
   } catch {
     return res.status(500).json({ error: "An unexpected error occurred" });
   }
