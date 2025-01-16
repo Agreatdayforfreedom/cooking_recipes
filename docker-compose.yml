@@ -17,6 +17,18 @@ services:
       - DATABASE_URL=postgresql://postgres:root@postgres:5432/recipes?schema=public
     depends_on:
       - postgres
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 5173:5173
+    volumes:
+      - "./frontend:/app"
+      - "/app/node_modules"
+    command: pnpm run dev
+    depends_on:
+      - backend
 
   postgres:
     image: postgres
