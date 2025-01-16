@@ -13,7 +13,7 @@ export const signin = async (req: Request, res: Response) => {
   }
   try {
     const { email, password } = data.data;
-    const userExists = await prisma.user.findUnique({
+    const userExists = await prisma.users.findUnique({
       where: {
         email,
       },
@@ -53,7 +53,7 @@ export const signup = async (req: Request, res: Response) => {
   try {
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
-    const user = await prisma.user.create({ data: { email, lastname, name, password: passwordHash } });
+    const user = await prisma.users.create({ data: { email, lastname, name, password: passwordHash } });
 
     const { password: _, ...rest } = user;
 

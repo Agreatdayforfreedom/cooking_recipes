@@ -17,7 +17,7 @@ describe("auth", () => {
         confirmPassword: "Testpassword1",
       });
 
-      const newUser = await prisma.user.findUnique({
+      const newUser = await prisma.users.findUnique({
         where: {
           email: "lol@gmail.com",
         },
@@ -56,7 +56,7 @@ describe("auth", () => {
         lastname: "test",
         password: "Testpassword1",
       };
-      await prisma.user.create({ data });
+      await prisma.users.create({ data });
       const { status, body } = await request(app)
         .post("/signup")
         .send({ ...data, confirmPassword: "Testpassword1" });
@@ -75,7 +75,7 @@ describe("auth", () => {
       password: "Testpassword1",
     };
     beforeEach(async () => {
-      await prisma.user.create({
+      await prisma.users.create({
         data: {
           email: data.email,
           name: data.name,

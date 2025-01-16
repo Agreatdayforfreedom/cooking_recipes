@@ -13,12 +13,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       Int    @id @default(autoincrement())
-  name     String
-  lastname String
-  email    String @unique
-  password String
+model Users {
+  id         Int      @id @default(autoincrement())
+  name       String
+  lastname   String
+  email      String   @unique
+  password   String
+  created_at DateTime @default(now())
 
-  @@map("user")
+  recipes  Recipes[]
+  ratings  Ratings[]
+
+  @@map("users")
+}
+
+model Recipes {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  ingredients Json
+  image       String?
+  created_at  DateTime @default(now())
+  
+  user        Users    @relation(fields: [userId], references: [id])
+  userId      Int      @map("user_id")
+
+  ratings Ratings[]
+
+  @@map("recipes")
+}
+
+model Ratings {
+  id       Int        @id @default(autoincrement())
+  review   String?
+  rating   Int 
+  
+  created_at DateTime @default(now())
+
+  user     Users      @relation(fields: [userId], references: [id])
+  userId   Int        @map("user_id")
+
+  recipe   Recipes    @relation(fields: [recipeId], references: [id])
+  recipeId Int        @map("recipe_id")
+
+  @@map("ratings")
 }
