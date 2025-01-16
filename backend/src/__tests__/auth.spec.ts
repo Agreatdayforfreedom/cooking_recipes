@@ -102,7 +102,7 @@ describe("auth", () => {
         password: data.password,
       });
 
-      let keys = Object.keys(body.user);
+      const keys = Object.keys(body.user);
       expect(keys.length).toBe(5);
       expect(keys).toStrictEqual(["id", "name", "lastname", "email", "created_at"]);
     });

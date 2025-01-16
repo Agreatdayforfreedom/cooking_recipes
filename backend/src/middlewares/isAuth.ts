@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Users } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { prisma } from "../prisma";
@@ -12,7 +12,7 @@ interface IPayload {
 declare global {
   namespace Express {
     interface Request {
-      user: Omit<User, "password">;
+      user: Omit<Users, "password">;
     }
   }
 }
@@ -31,7 +31,7 @@ const isAuth = async (req: Request, res: Response, next: NextFunction) => {
 
       const payload = jwt.verify(token, process.env.JWT_SECRET as string) as IPayload;
 
-      req.user = (await prisma.user.findFirst({
+      req.user = (await prisma.users.findFirst({
         where: {
           id: payload.id,
         },
@@ -41,7 +41,7 @@ const isAuth = async (req: Request, res: Response, next: NextFunction) => {
           lastname: true,
           name: true,
         },
-      })) as Omit<User, "password">;
+      })) as Omit<Users, "password">;
 
       return next();
     }

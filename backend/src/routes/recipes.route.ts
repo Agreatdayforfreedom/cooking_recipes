@@ -6,10 +6,13 @@ const router = express();
 
 router.get("/", getAll);
 
+//protected
+router.get("/own", isAuth, getOwn);
+
+//unprotected
 router.get("/:id", getOne);
 
 //protected
-router.get("/own", isAuth, getOwn);
 
 router.post("/create", isAuth, createOne);
 
