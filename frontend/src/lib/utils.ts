@@ -13,8 +13,10 @@ export function ingredients2string(
   let string = "";
 
   for (const ingredient of ingredients) {
-    string += ingredient.quantity.toString();
-    string += " ";
+    if (ingredient.quantity > 0) {
+      string += ingredient.quantity.toString();
+      string += " ";
+    }
     string += ingredient.name;
     string += ", ";
   }

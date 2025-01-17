@@ -12,10 +12,3 @@ export const recipeFormSchema = z.object({
   ingredients: z.string(), // map later to ingredientsSchema
   image: z.string().optional(),
 });
-
-export const updateRecipeSchema = z.object({
-  title: z.string().optional(),
-  description: z.string().optional(),
-  ingredients: z.optional(ingredientsSchema),
-  image: z.string().optional(),
-});
