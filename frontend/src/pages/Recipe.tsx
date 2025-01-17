@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { api } from "@/lib/api";
 import { Recipe } from "@/types";
-import { string2ingredients } from "../lib/utils";
 import { ListIngredients } from "../components/ListIngredients";
 import { RatingSection } from "../components/RatingSection";
 import moment from "moment";
@@ -16,7 +15,6 @@ const RecipePage = () => {
     const fetch = async () => {
       try {
         const response = await api.get(`/recipe/${id}`);
-        console.log(response.data.recipe);
         setRecipe(response.data.recipe);
       } catch (error) {
         //todo

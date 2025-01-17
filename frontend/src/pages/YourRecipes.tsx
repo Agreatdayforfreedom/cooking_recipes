@@ -23,7 +23,7 @@ const YourRecipes = () => {
       <div className="flex justify-end my-5">
         <RecipeDialog />
       </div>
-      <section className="w-[90%] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <section className="w-[90%] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {recipes.map((recipe) => (
           <RecipeCard key={recipe.id} recipe={recipe} editable />
         ))}

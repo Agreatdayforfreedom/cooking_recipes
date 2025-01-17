@@ -7,9 +7,9 @@ interface Props {
 
 export const ListIngredients = ({ ingredients }: Props) => {
   if (!ingredients) return null;
-  return ingredients.map((ingredient) => {
+  return ingredients.map((ingredient, i) => {
     return (
-      <div className="flex">
+      <div className="flex" key={i}>
         <span>
           <Dot className="stroke-dish-dash-700" />
         </span>

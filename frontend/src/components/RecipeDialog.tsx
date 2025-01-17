@@ -9,28 +9,33 @@ import {
 import { RecipeForm } from "./RecipeForm";
 import { useInMemoryRecipe } from "@/stores/recipes";
 import { Button } from "./ui/button";
+import { useState } from "react";
 
 interface Props {
   recipeId?: number;
 }
 
 export const RecipeDialog = ({ recipeId }: Props) => {
+  const [openModal, setOpenModal] = useState(false);
+
   const recipe = useInMemoryRecipe(recipeId);
   return (
-    <Dialog>
+    <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger asChild>
         {recipe ? (
-          <Pen
-            className="stroke-orange-600 hover:stroke-orange-700 transition-colors"
-            size={18}
-          />
+          <Button
+            className="h-6 rounded-full text-xs font-bold bg-orange-600 hover:bg-orange-700
+            transition-colors"
+          >
+            Edit
+          </Button>
         ) : (
           <Button className=" mx-4 w-full sm:w-auto bg-dish-dash-950 hover:bg-dish-dash-900 transition-colors">
             Create recipe
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="min-w-fit">
         <DialogHeader>
           <DialogTitle>
             {recipe ? (
@@ -46,8 +51,7 @@ export const RecipeDialog = ({ recipeId }: Props) => {
             )}
           </DialogTitle>
         </DialogHeader>
-        {/* todo close modal if there is no recipe */}
-        <RecipeForm recipe={recipe!} />
+        <RecipeForm recipe={recipe!} setOpenModal={setOpenModal} />
       </DialogContent>
     </Dialog>
   );

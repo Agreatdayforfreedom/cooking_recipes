@@ -16,11 +16,11 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="mt-42">
+    <section className="w-[90%] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
       {recipes.map((recipe) => (
-        <RecipeCard recipe={recipe} />
+        <RecipeCard key={recipe.id} recipe={recipe} />
       ))}
-    </div>
+    </section>
   );
 };
 

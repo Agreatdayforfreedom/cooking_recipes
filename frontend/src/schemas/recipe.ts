@@ -8,7 +8,7 @@ export const ingredientsSchema = z
   .array();
 export const recipeFormSchema = z.object({
   title: z.string().min(1).max(128),
-  description: z.string().min(1).max(1024),
+  description: z.string().min(1),
   ingredients: z.string(), // map later to ingredientsSchema
   image: z.string().optional(),
 });

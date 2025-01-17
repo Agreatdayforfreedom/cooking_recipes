@@ -19,7 +19,6 @@ function App() {
     const fetchMe = async () => {
       try {
         const response = await api.get("/profile");
-        console.log(response.data.user);
         setUser(response.data.user);
       } catch (error) {
         setUser(null);

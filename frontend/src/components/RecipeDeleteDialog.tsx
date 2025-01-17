@@ -33,11 +33,13 @@ export const RecipeDeleteDialog = ({ recipeId }: Props) => {
 
   return (
     <Dialog>
-      <DialogTrigger>
-        <Trash2
-          className="stroke-red-600 hover:stroke-red-700 transition-colors"
-          size={18}
-        />
+      <DialogTrigger asChild>
+        <Button
+          className="h-6 rounded-full text-xs font-bold bg-red-600 hover:bg-red-700
+            transition-colors"
+        >
+          Delete
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
