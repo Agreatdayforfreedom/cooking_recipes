@@ -84,7 +84,6 @@ const RecipePage = () => {
         </section>
         <RatingSection
           ratings={recipe.ratings}
-          avg_rating={recipe.avg_rating || 0}
           total_ratings={recipe._count?.ratings || 0}
         />
       </div>

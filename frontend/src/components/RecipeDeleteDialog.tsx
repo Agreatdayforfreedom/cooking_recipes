@@ -1,4 +1,3 @@
-import { Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
