@@ -45,6 +45,7 @@ export const RecipeCard = ({ recipe, editable = false }: Props) => {
                 key={i}
                 className="font-semibold after:content-[','] after:last:content-[]"
               >
+                {ingredient.quantity > 0 && <>{ingredient.quantity} </>}
                 {ingredient.name}
               </span>
             ))}

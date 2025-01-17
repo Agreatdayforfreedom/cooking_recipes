@@ -19,6 +19,7 @@ import { signinSchema } from "@/schemas/auth";
 import { useAuth } from "@/stores/auth";
 import { api } from "@/lib/api";
 import { AxiosError } from "axios";
+import { ErrorMessage } from "../components/ErrorMessage";
 
 export const LoginPage = () => {
   const setUser = useAuth((state) => state.setUser);
@@ -112,9 +113,8 @@ export const LoginPage = () => {
                 </Link>
               </div>
               <div className="flex flex-col-reverse sm:flex-row justify-between space-x-3 items-center mt-1">
-                <span className="text-sm text-red-800 mt-5 font-semibold">
-                  {error && error}
-                </span>
+                <ErrorMessage error={error} />
+
                 <Button
                   disabled={isPending}
                   type="submit"

@@ -19,6 +19,9 @@ import { Rating } from "@/types";
 import { Rating as RatingStars } from "@smastrom/react-rating";
 import { Textarea } from "./ui/textarea";
 import { AxiosError } from "axios";
+import { useRecipes } from "../stores/recipes";
+import { useAuth } from "../stores/auth";
+import { ErrorMessage } from "./ErrorMessage";
 
 interface Props {
   ratingToEdit?: Rating;
@@ -29,6 +32,10 @@ export const RatingForm = ({ ratingToEdit, clearRatingToEdit }: Props) => {
   const [isPending, setPending] = useState(false);
   const [error, setError] = useState("");
   const { id } = useParams();
+
+  const addRatingToRecipe = useRecipes((state) => state.addRatingToRecipe);
+  const editRecipeRating = useRecipes((state) => state.editRecipeRating);
+  const user = useAuth((state) => state.user);
 
   const form = useForm<z.infer<typeof ratingFormSchema>>({
     resolver: zodResolver(ratingFormSchema),
@@ -53,16 +60,18 @@ export const RatingForm = ({ ratingToEdit, clearRatingToEdit }: Props) => {
         ? `/rating/update/${ratingToEdit.id}`
         : `/rating/add`;
       const method = ratingToEdit ? "patch" : "post";
-      await api[method](url, {
+      const response = await api[method](url, {
         ...values,
         recipeId: ratingToEdit ? null : parseInt(id!, 10),
       });
 
-      // if (!recipe) { //todo same
-      //   setRecipe(response.data.recipe);
-      // } else {
-      //   editRecipe(response.data.recipe);
-      // }
+      if (user) {
+        if (!ratingToEdit) {
+          addRatingToRecipe({ ...response.data.rating, user: { ...user } });
+        } else {
+          editRecipeRating(response.data.rating);
+        }
+      }
     } catch (error) {
       if (error instanceof AxiosError) {
         setError(error.response?.data.error);
@@ -120,9 +129,8 @@ export const RatingForm = ({ ratingToEdit, clearRatingToEdit }: Props) => {
           )}
         />
         <div className="flex items-center justify-between">
-          <span className="text-sm text-red-800 font-semibold">
-            {error && error}
-          </span>
+          <ErrorMessage error={error} />
+
           <div className=" flex justify-end p-2 space-x-2">
             {ratingToEdit ? (
               <Button

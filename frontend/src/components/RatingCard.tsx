@@ -8,7 +8,7 @@ import { Pen } from "lucide-react";
 
 interface Props {
   rating: Rating;
-  setRatingToEdit: (rating: Rating) => void;
+  setRatingToEdit: (rating: Rating | undefined) => void;
 }
 
 export const RatingCard = ({ rating, setRatingToEdit }: Props) => {
@@ -39,7 +39,10 @@ export const RatingCard = ({ rating, setRatingToEdit }: Props) => {
               size={18}
             />
           </Button>
-          <RatingDeleteDialog ratingId={rating.id} />
+          <RatingDeleteDialog
+            ratingId={rating.id}
+            setRatingToEdit={setRatingToEdit}
+          />
         </div>
       ) : null}
     </div>

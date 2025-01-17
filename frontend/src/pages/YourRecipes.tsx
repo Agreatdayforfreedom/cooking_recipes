@@ -1,23 +1,35 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { RecipeCard } from "@/components/RecipeCard";
 import { useRecipes } from "@/stores/recipes";
 import { RecipeDialog } from "../components/RecipeDialog";
+import { Loader } from "../components/Loader";
+import { useNavigate } from "react-router";
 
 const YourRecipes = () => {
+  const [loading, setLoading] = useState(false);
+
   const recipes = useRecipes((state) => state.recipes);
   const setRecipes = useRecipes((state) => state.setRecipes);
 
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchYourRecipes = async () => {
-      //todo add trycatch and loader?
-      const response = await api.get("/recipe/own");
-      setRecipes(response.data.recipes);
+      setLoading(true);
+      try {
+        const response = await api.get("/recipe/own");
+        setRecipes(response.data.recipes);
+      } catch {
+        navigate("/");
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchYourRecipes();
   }, []);
 
+  if (loading) return <Loader />;
   return (
     <div>
       <div className="flex justify-end my-5">

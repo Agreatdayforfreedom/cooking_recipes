@@ -20,6 +20,7 @@ import { signupSchema } from "@/schemas/auth";
 import { useAuth } from "@/stores/auth";
 import { api } from "@/lib/api";
 import { AxiosError } from "axios";
+import { ErrorMessage } from "../components/ErrorMessage";
 
 const SignupPage = () => {
   const [isPending, setPending] = useState(false);
@@ -176,9 +177,8 @@ const SignupPage = () => {
                 </Link>
               </div>
               <div className="flex flex-col-reverse sm:flex-row justify-between space-x-3 items-center mt-1">
-                <span className="text-sm text-red-800 font-semibold mt-5">
-                  {error && error}
-                </span>
+                <ErrorMessage error={error} />
+
                 <Button
                   disabled={isPending}
                   type="submit"

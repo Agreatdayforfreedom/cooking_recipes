@@ -36,7 +36,7 @@ export const RecipeForm = ({ recipe, setOpenModal }: Props) => {
   const [error, setError] = useState("");
 
   const editRecipe = useRecipes((state) => state.editRecipe);
-  const setRecipe = useRecipes((state) => state.setRecipe);
+  const addRecipe = useRecipes((state) => state.addRecipe);
 
   //todo check if validations are correct and impl cloudinary for images
   const form = useForm<z.infer<typeof recipeFormSchema>>({
@@ -51,7 +51,6 @@ export const RecipeForm = ({ recipe, setOpenModal }: Props) => {
   const onSubmit = async (values: z.infer<typeof recipeFormSchema>) => {
     setPending(true);
     setError("");
-
     const ingredients = ingredientsSchema.safeParse(
       string2ingredients(values.ingredients)
     );
@@ -78,7 +77,7 @@ export const RecipeForm = ({ recipe, setOpenModal }: Props) => {
         },
       });
       if (!recipe) {
-        setRecipe(response.data.recipe);
+        addRecipe(response.data.recipe);
       } else {
         editRecipe(response.data.recipe);
       }

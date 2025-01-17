@@ -28,7 +28,7 @@ export function string2ingredients(ingredients: string) {
 
   ingredients.split(", ").forEach((ingredient) => {
     if (ingredient === "") return;
-    let get_qty = ingredient.split(" ")[0];
+    let get_qty = ingredient.trim().split(" ")[0];
     let string = !isNaN(get_qty as any)
       ? ingredient.slice(get_qty.length + 1)
       : ingredient; // remove the qty total characters plus 1 space;

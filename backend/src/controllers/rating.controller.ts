@@ -24,7 +24,7 @@ export const addRating = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "You cannot add more than one review per recipe" });
     }
 
-    await prisma.ratings.create({
+    const _rating = await prisma.ratings.create({
       data: {
         rating,
         review,
@@ -33,7 +33,7 @@ export const addRating = async (req: Request, res: Response) => {
       },
     });
 
-    return res.json({ message: "Rating added successfully" });
+    return res.json({ message: "Rating added successfully", rating: _rating });
   } catch {
     return res.status(500).json({ error: "An unexpected error occurred" });
   }

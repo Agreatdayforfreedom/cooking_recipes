@@ -12,21 +12,31 @@ import { Button } from "./ui/button";
 import { api } from "../lib/api";
 import { AxiosError } from "axios";
 import { useState } from "react";
+import { useRecipes } from "../stores/recipes";
+import { Rating } from "../types";
+import { ErrorMessage } from "./ErrorMessage";
 
 interface Props {
   ratingId: number;
+  setRatingToEdit: (rating: Rating | undefined) => void;
 }
 
-export const RatingDeleteDialog = ({ ratingId }: Props) => {
+export const RatingDeleteDialog = ({ ratingId, setRatingToEdit }: Props) => {
   const [error, setError] = useState("");
   const [isPending, setPending] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+
+  const deleteRatingFromRecipe = useRecipes(
+    (state) => state.deleteRatingFromRecipe
+  );
 
   async function removeRecipe() {
     try {
       setError("");
       setPending(true);
       await api.delete(`/rating/delete/${ratingId}`);
+      deleteRatingFromRecipe(ratingId);
+      setRatingToEdit(undefined);
     } catch (error) {
       if (error instanceof AxiosError) {
         setError(error.message);
@@ -57,7 +67,7 @@ export const RatingDeleteDialog = ({ ratingId }: Props) => {
           </DialogDescription>
         </DialogHeader>
         <div className="flex items-center justify-between">
-          <span className="text-red-800">{error && error}</span>
+          <ErrorMessage error={error} />
 
           <div className="flex justify-end">
             <Button

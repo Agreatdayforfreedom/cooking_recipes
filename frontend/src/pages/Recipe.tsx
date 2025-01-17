@@ -1,28 +1,38 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { api } from "@/lib/api";
-import { Recipe } from "@/types";
 import { ListIngredients } from "../components/ListIngredients";
 import { RatingSection } from "../components/RatingSection";
 import moment from "moment";
-import { Rating } from "@smastrom/react-rating";
+import { Rating as StarRating } from "@smastrom/react-rating";
 import { Separator } from "../components/ui/separator";
+import { useRecipes } from "../stores/recipes";
+import { Loader } from "../components/Loader";
 
 const RecipePage = () => {
-  const [recipe, setRecipe] = useState({} as Recipe);
+  const [loading, setLoading] = useState(false);
+
+  const recipe = useRecipes((state) => state.recipe);
+  const setRecipe = useRecipes((state) => state.setRecipe);
+  const navigate = useNavigate();
+
   const { id } = useParams();
   useEffect(() => {
+    setLoading(true);
     const fetch = async () => {
       try {
         const response = await api.get(`/recipe/${id}`);
         setRecipe(response.data.recipe);
       } catch (error) {
-        //todo
+        navigate("/");
+      } finally {
+        setLoading(false);
       }
     };
     fetch();
   }, []);
-  if (!recipe) return null;
+
+  if (loading || !recipe) return <Loader />;
   return (
     <div className="w-[90%] sm:w-[75%]  mx-auto">
       <div className="flex flex-col items-center">
@@ -51,7 +61,7 @@ const RecipePage = () => {
           </div>
           <div className="flex space-x-6 ">
             <div className="flex space-x-2">
-              <Rating
+              <StarRating
                 value={recipe.avg_rating || 0}
                 style={{ maxWidth: "90px" }}
               />
