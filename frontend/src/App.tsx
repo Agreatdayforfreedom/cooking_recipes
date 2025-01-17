@@ -14,7 +14,7 @@ import { api } from "@/lib/api";
 
 function App() {
   const setUser = useAuth((state) => state.setUser);
-
+  const token = useAuth((state) => state.token);
   useEffect(() => {
     const fetchMe = async () => {
       try {
@@ -30,18 +30,18 @@ function App() {
   }, []);
 
   useLayoutEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token"); //todo move this to persistent storage
 
     const authInterceptor = api.interceptors.request.use((config) => {
       config.headers.Authorization = token
         ? `Bearer ${token}`
-        : config.headers.Authorization;
+        : config.headers.Authorization; //todo this is not being cleaned
       return config;
     });
     return () => {
       api.interceptors.request.eject(authInterceptor);
     };
-  }, []);
+  }, [token]);
 
   return (
     <BrowserRouter>

@@ -48,7 +48,15 @@ export const getOne = async (req: Request, res: Response) => {
             password: true,
           },
         },
-        ratings: true,
+        ratings: {
+          include: {
+            user: {
+              omit: {
+                password: true,
+              },
+            },
+          },
+        },
         _count: {
           select: {
             ratings: true,
@@ -144,7 +152,7 @@ export const updateOne = async (req: Request, res: Response) => {
   }
 
   try {
-    const updated = await prisma.recipes.update({
+    const recipe = await prisma.recipes.update({
       where: {
         id: parseInt(req.params.id, 10),
         userId: req.user.id,
@@ -153,7 +161,7 @@ export const updateOne = async (req: Request, res: Response) => {
       data: data.data,
     });
 
-    res.send({ message: "Updated successfully", updated });
+    res.send({ message: "Updated successfully", recipe });
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === "P2025") {

@@ -12,77 +12,88 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
-import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { ratingFormSchema } from "@/schemas/rating";
 import { api } from "@/lib/api";
 import { Rating } from "@/types";
+import { Rating as RatingStars } from "@smastrom/react-rating";
+import { Textarea } from "./ui/textarea";
+import { AxiosError } from "axios";
 
 interface Props {
   ratingToEdit?: Rating;
+  clearRatingToEdit: () => void;
 }
 
-export const RatingForm = ({ ratingToEdit }: Props) => {
-  const { id } = useParams();
+export const RatingForm = ({ ratingToEdit, clearRatingToEdit }: Props) => {
   const [isPending, setPending] = useState(false);
+  const [error, setError] = useState("");
+  const { id } = useParams();
 
   const form = useForm<z.infer<typeof ratingFormSchema>>({
     resolver: zodResolver(ratingFormSchema),
     defaultValues: {
-      rating: 0,
+      rating: 1,
       review: "",
     },
   });
+
   useEffect(() => {
     if (ratingToEdit) {
-      //TODO ADD A CANCEL BUTTON AND WHEN PRESSED REMOVE ratingToEdit STATE AND RESET FORM
       form.setValue("rating", ratingToEdit.rating);
       form.setValue("review", ratingToEdit.review);
     }
   }, [ratingToEdit]);
+
   const onSubmit = async (values: z.infer<typeof ratingFormSchema>) => {
     setPending(true);
-
+    setError("");
     try {
-      // const url = recipe ? `/recipe/update/${recipe.id}` : `/recipe/create`;
       const url = ratingToEdit
         ? `/rating/update/${ratingToEdit.id}`
         : `/rating/add`;
       const method = ratingToEdit ? "patch" : "post";
-      const response = await api[method](url, {
+      await api[method](url, {
         ...values,
         recipeId: ratingToEdit ? null : parseInt(id!, 10),
       });
-      console.log(response);
+
       // if (!recipe) { //todo same
       //   setRecipe(response.data.recipe);
       // } else {
       //   editRecipe(response.data.recipe);
       // }
     } catch (error) {
-      setPending(false);
+      if (error instanceof AxiosError) {
+        setError(error.response?.data.error);
+      } else {
+        setError("Something went wrong! Try again.");
+      }
     } finally {
       setPending(false);
+      form.reset();
     }
+  };
+
+  const onCancel = () => {
+    form.reset();
+    clearRatingToEdit();
+    setError("");
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-1">
-        {JSON.stringify(ratingToEdit)}
         <FormField
           control={form.control}
           name="rating"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Rating</FormLabel>
+              <FormLabel className="text-md font-semibold">
+                Your Rating
+              </FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Enchanted spaghetti."
-                  type="number"
-                  className="border-dish-dash-800/50 focus-visible:ring-offset-0 focus-visible:ring-dish-dash-800/50 rounded-sm"
-                  {...field}
-                />
+                <RatingStars {...field} style={{ maxWidth: 180 }} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -93,11 +104,13 @@ export const RatingForm = ({ ratingToEdit }: Props) => {
           name="review"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Review</FormLabel>
-              <FormControl>
-                <Input
+              <FormLabel>
+                Review <span className="italic">(Optional)</span>
+              </FormLabel>
+              <FormControl className="mt-4">
+                <Textarea
                   placeholder="Enchanted spaghetti."
-                  type="text"
+                  rows={4}
                   className="border-dish-dash-800/50 focus-visible:ring-offset-0 focus-visible:ring-dish-dash-800/50 rounded-sm"
                   {...field}
                 />
@@ -106,7 +119,29 @@ export const RatingForm = ({ ratingToEdit }: Props) => {
             </FormItem>
           )}
         />
-        <Button type="submit">Review</Button>
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-red-800 font-semibold">
+            {error && error}
+          </span>
+          <div className=" flex justify-end p-2 space-x-2">
+            {ratingToEdit ? (
+              <Button
+                onClick={onCancel}
+                className="hover:no-underline"
+                variant={"link"}
+              >
+                Cancel
+              </Button>
+            ) : null}
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="w-full sm:w-auto bg-dish-dash-950 hover:bg-dish-dash-900 font-bold"
+            >
+              Submit review
+            </Button>
+          </div>
+        </div>
       </form>
     </Form>
   );

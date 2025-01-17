@@ -22,6 +22,7 @@ import { api } from "@/lib/api";
 
 export const LoginPage = () => {
   const setUser = useAuth((state) => state.setUser);
+  const setToken = useAuth((state) => state.setToken);
 
   const [isPending, setPending] = useState(false);
 
@@ -39,6 +40,7 @@ export const LoginPage = () => {
       const response = await api.post("/signin", values);
       localStorage.setItem("token", response.data.token as string);
       setUser(response.data.user);
+      setToken(response.data.token);
     } catch (error) {
       setPending(false);
     } finally {

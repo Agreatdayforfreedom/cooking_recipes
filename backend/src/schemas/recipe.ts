@@ -1,9 +1,11 @@
 import { z } from "zod";
 
-const ingredientsSchema = z.object({
-  name: z.string(),
-  quantity: z.number(),
-});
+const ingredientsSchema = z
+  .object({
+    name: z.string(),
+    quantity: z.number(),
+  })
+  .array();
 
 export const createRecipeSchema = z.object({
   title: z.string(),

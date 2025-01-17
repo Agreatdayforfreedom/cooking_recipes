@@ -2,9 +2,11 @@ import { Link } from "react-router";
 import { Button } from "../components/ui/button";
 import { useAuth } from "../stores/auth";
 import { LogOut, Utensils } from "lucide-react";
+import { useRecipes } from "../stores/recipes";
 
 export const Header = () => {
   const setUser = useAuth((state) => state.setUser);
+  const setRecipes = useRecipes((state) => state.setRecipes);
   const user = useAuth((state) => state.user);
   return (
     <header className="flex justify-between items-center w-full h-12 bg-dish-dash-800 border-b border-dish-dash-900">
@@ -20,6 +22,7 @@ export const Header = () => {
               <Button
                 onClick={() => {
                   setUser(null);
+                  setRecipes([]); //also clear the recipes (your recipes) state to avoid conflicts
                   localStorage.removeItem("token");
                 }}
                 variant={"link"}

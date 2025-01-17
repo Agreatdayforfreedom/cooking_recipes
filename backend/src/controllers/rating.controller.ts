@@ -59,7 +59,7 @@ export const updateOne = async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
-        return res.status(404).json({ error: "Recipe not found" });
+        return res.status(404).json({ error: "Rating not found" });
       }
     }
     return res.status(500).json({ error: "An unexpected error occurred" });
@@ -78,7 +78,7 @@ export const deleteOne = async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
-        return res.status(404).json({ error: "Recipe not found" });
+        return res.status(404).json({ error: "Rating not found" });
       }
     }
     return res.status(500).json({ error: "An unexpected error occurred" });

@@ -24,6 +24,7 @@ const SignupPage = () => {
   const [isPending, setPending] = useState(false);
 
   const setUser = useAuth((state) => state.setUser);
+  const setToken = useAuth((state) => state.setToken);
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -42,6 +43,7 @@ const SignupPage = () => {
       const response = await api.post("/signup", values);
       localStorage.setItem("token", response.data.token as string);
       setUser(response.data.user);
+      setToken(response.data.token);
     } catch (error) {
       setPending(false);
     } finally {

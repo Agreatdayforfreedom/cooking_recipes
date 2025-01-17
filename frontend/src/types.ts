@@ -20,6 +20,7 @@ export type Recipe = {
   created_at: string;
   image?: string;
   userId?: number; // unused
+  user: User;
   avg_rating?: number;
   _count?: {
     ratings: number;
@@ -33,4 +34,5 @@ export type Rating = {
   review: string;
   user: User;
   userId: number;
+  created_at: string;
 };
