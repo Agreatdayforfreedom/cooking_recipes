@@ -42,7 +42,7 @@ export const RatingDeleteDialog = ({ ratingId }: Props) => {
     <Dialog onOpenChange={setModalOpen} open={modalOpen}>
       <DialogTrigger>
         <Trash2
-          className="stroke-red-600 hover:stroke-red-700 transition-colors"
+          className="my-2 stroke-red-600 hover:stroke-red-700 transition-colors"
           size={18}
         />
       </DialogTrigger>

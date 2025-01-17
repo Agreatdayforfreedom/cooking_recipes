@@ -14,13 +14,11 @@ export const RecipeCard = ({ recipe, editable = false }: Props) => {
   return (
     <article className="w-full flex flex-col justify-between  py-4 relative bg-white shadow-md rounded-md overflow-hidden">
       <div className="">
-        {recipe.image ? (
+        {recipe.image && (
           <img
             src={recipe.image}
             className="w-full h-32 sm:h-48 object-cover"
           />
-        ) : (
-          <div>FALLBACK</div>
         )}
         <div className="p-4">
           <Link to={`/recipe/${recipe.id}`}>

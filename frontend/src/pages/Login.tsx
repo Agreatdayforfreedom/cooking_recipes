@@ -18,11 +18,13 @@ import {
 import { signinSchema } from "@/schemas/auth";
 import { useAuth } from "@/stores/auth";
 import { api } from "@/lib/api";
+import { AxiosError } from "axios";
 
 export const LoginPage = () => {
   const setUser = useAuth((state) => state.setUser);
   const setToken = useAuth((state) => state.setToken);
 
+  const [error, setError] = useState("");
   const [isPending, setPending] = useState(false);
 
   const form = useForm<z.infer<typeof signinSchema>>({
@@ -34,6 +36,7 @@ export const LoginPage = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof signinSchema>) => {
+    setError("");
     setPending(true);
     try {
       const response = await api.post("/signin", values);
@@ -41,7 +44,11 @@ export const LoginPage = () => {
       setUser(response.data.user);
       setToken(response.data.token);
     } catch (error) {
-      setPending(false);
+      if (error instanceof AxiosError) {
+        setError(error.response?.data.error);
+      } else {
+        setError("Something went wrong! Try again.");
+      }
     } finally {
       setPending(false);
     }
@@ -51,10 +58,10 @@ export const LoginPage = () => {
     <div className="w-full h-screen flex items-center justify-center">
       <div className="w-[90%] sm:w-[75%] md:w-[50%]">
         <header className="flex justify-between mx-3 items-center mb-8">
-          <div className="flex items-baseline space-x-2 mb-5">
+          <Link to="/" className="flex items-baseline space-x-2 mb-5">
             <h1 className="text-4xl font-bold text-dish-dash-700">Dish Dash</h1>
             <Utensils className=" text-dish-dash-700" size={29} />
-          </div>
+          </Link>
           <h2 className="text-2xl font-bold mb-3">Log in</h2>
         </header>
         <Form {...form}>
@@ -104,7 +111,10 @@ export const LoginPage = () => {
                   Sign Up
                 </Link>
               </div>
-              <div className="flex justify-end space-x-3 items-center mt-1">
+              <div className="flex flex-col-reverse sm:flex-row justify-between space-x-3 items-center mt-1">
+                <span className="text-sm text-red-800 mt-5 font-semibold">
+                  {error && error}
+                </span>
                 <Button
                   disabled={isPending}
                   type="submit"

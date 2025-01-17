@@ -28,8 +28,12 @@ export const RatingCard = ({ rating, setRatingToEdit }: Props) => {
         <p className="p-2">{rating.review}</p>
       </div>
       {user?.id === rating.userId ? (
-        <div>
-          <Button variant={"link"} onClick={() => setRatingToEdit(rating)}>
+        <div className="flex flex-col sm:space-x-2 sm:flex-row items-center sm:items-start ">
+          <Button
+            className="p-0"
+            variant={"link"}
+            onClick={() => setRatingToEdit(rating)}
+          >
             <Pen
               className="stroke-orange-600 hover:stroke-orange-700 transition-colors"
               size={18}

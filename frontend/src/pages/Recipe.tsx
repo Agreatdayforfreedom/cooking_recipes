@@ -26,10 +26,8 @@ const RecipePage = () => {
   return (
     <div className="w-[90%] sm:w-[75%]  mx-auto">
       <div className="flex flex-col items-center">
-        {recipe.image ? (
+        {recipe.image && (
           <img src={recipe.image} className=" max-h-[400px] w-auto rounded" />
-        ) : (
-          <div>FALLBACK</div>
         )}
 
         <section className="flex flex-col w-full items-start mt-5 space-y-6">
@@ -77,9 +75,9 @@ const RecipePage = () => {
             <h3 className="text-xl font-semibold">Ingredients</h3>
             <ListIngredients ingredients={recipe.ingredients} />
           </div>
-          <div>
+          <div className="w-full">
             <h3 className="text-xl font-semibold">Description</h3>
-            <p className="p-1">{recipe.description}</p>
+            <p className="p-1 break-all">{recipe.description}</p>
           </div>
         </section>
         <RatingSection

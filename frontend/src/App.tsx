@@ -29,12 +29,11 @@ function App() {
   }, []);
 
   useLayoutEffect(() => {
-    const token = localStorage.getItem("token"); //todo move this to persistent storage
-
+    const tk = localStorage.getItem("token");
     const authInterceptor = api.interceptors.request.use((config) => {
-      config.headers.Authorization = token
-        ? `Bearer ${token}`
-        : config.headers.Authorization; //todo this is not being cleaned
+      config.headers.Authorization = tk
+        ? `Bearer ${tk}`
+        : config.headers.Authorization;
       return config;
     });
     return () => {

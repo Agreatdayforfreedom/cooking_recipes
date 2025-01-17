@@ -9,29 +9,32 @@ import {
 import { useInMemoryRecipe, useRecipes } from "@/stores/recipes";
 import { Button } from "./ui/button";
 import { api } from "../lib/api";
+import { useState } from "react";
 
 interface Props {
   recipeId: number;
 }
 
 export const RecipeDeleteDialog = ({ recipeId }: Props) => {
+  const [openModal, setOpenModal] = useState(false);
   const recipe = useInMemoryRecipe(recipeId);
   const deleteRecipe = useRecipes((state) => state.deleteRecipe);
   if (!recipe) {
-    return null; // todo close modal
+    setOpenModal(false);
   }
 
   async function removeRecipe() {
     try {
       await api.delete(`/recipe/delete/${recipe!.id}`);
       deleteRecipe(recipe!.id);
+      setOpenModal(false);
     } catch (error) {
       console.log(error); //todo
     }
   }
 
   return (
-    <Dialog>
+    <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger asChild>
         <Button
           className="h-6 rounded-full text-xs font-bold bg-red-600 hover:bg-red-700
@@ -58,7 +61,11 @@ export const RecipeDeleteDialog = ({ recipeId }: Props) => {
         </DialogHeader>
         <div className="flex justify-end">
           {/*  IMPLEMENT cancel button*/}
-          <Button variant={"link"} className="hover:no-underline">
+          <Button
+            onClick={() => setOpenModal(false)}
+            variant={"link"}
+            className="hover:no-underline"
+          >
             Cancel
           </Button>
           <Button variant={"destructive"} onClick={removeRecipe}>

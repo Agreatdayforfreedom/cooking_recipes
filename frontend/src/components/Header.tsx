@@ -6,22 +6,26 @@ import { useRecipes } from "../stores/recipes";
 
 export const Header = () => {
   const setUser = useAuth((state) => state.setUser);
+  const setToken = useAuth((state) => state.setToken);
   const setRecipes = useRecipes((state) => state.setRecipes);
   const user = useAuth((state) => state.user);
   return (
-    <header className="flex justify-between items-center w-full h-12 bg-dish-dash-800 border-b border-dish-dash-900">
+    <header className="flex flex-col py-3 sm:py-0 sm:flex-row justify-between items-center w-full min-h-12 bg-dish-dash-800 border-b border-dish-dash-900">
       <Link to="/" className="flex items-center space-x-1 ml-4 ">
         <h1 className="text-2xl font-bold text-white">Dish Dash</h1>
         <Utensils className=" text-white" size={20} />
       </Link>
       <nav>
-        {user !== undefined && //todo add skeleton
+        {user !== undefined &&
           (!!user ? (
             <>
-              <Link to="/your-recipes">Your recipes</Link>
+              <Link to="/your-recipes" className="font-bold text-gray-300">
+                Your recipes
+              </Link>
               <Button
                 onClick={() => {
                   setUser(null);
+                  setToken(undefined);
                   setRecipes([]); //also clear the recipes (your recipes) state to avoid conflicts
                   localStorage.removeItem("token");
                 }}

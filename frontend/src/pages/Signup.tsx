@@ -19,9 +19,11 @@ import {
 import { signupSchema } from "@/schemas/auth";
 import { useAuth } from "@/stores/auth";
 import { api } from "@/lib/api";
+import { AxiosError } from "axios";
 
 const SignupPage = () => {
   const [isPending, setPending] = useState(false);
+  const [error, setError] = useState("");
 
   const setUser = useAuth((state) => state.setUser);
   const setToken = useAuth((state) => state.setToken);
@@ -38,6 +40,8 @@ const SignupPage = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof signupSchema>) => {
+    setError("");
+
     setPending(true);
     try {
       const response = await api.post("/signup", values);
@@ -45,7 +49,11 @@ const SignupPage = () => {
       setUser(response.data.user);
       setToken(response.data.token);
     } catch (error) {
-      setPending(false);
+      if (error instanceof AxiosError) {
+        setError(error.response?.data.error);
+      } else {
+        setError("Something went wrong! Try again.");
+      }
     } finally {
       setPending(false);
     }
@@ -55,10 +63,10 @@ const SignupPage = () => {
     <div className="w-full h-screen flex items-center justify-center">
       <div className="w-[90%] sm:w-[75%] md:w-[50%]">
         <header className="flex justify-between mx-3 items-center mb-8">
-          <div className="flex items-baseline space-x-2 mb-5">
+          <Link to="/" className="flex items-baseline space-x-2 mb-5">
             <h1 className="text-4xl font-bold text-dish-dash-700">Dish Dash</h1>
             <Utensils className=" text-dish-dash-700" size={29} />
-          </div>
+          </Link>
           <h2 className="text-2xl font-bold mb-3">Sign up</h2>
         </header>
         <Form {...form}>
@@ -167,7 +175,10 @@ const SignupPage = () => {
                   Sign in
                 </Link>
               </div>
-              <div className="flex justify-end space-x-3 items-center mt-1">
+              <div className="flex flex-col-reverse sm:flex-row justify-between space-x-3 items-center mt-1">
+                <span className="text-sm text-red-800 font-semibold mt-5">
+                  {error && error}
+                </span>
                 <Button
                   disabled={isPending}
                   type="submit"

@@ -167,9 +167,8 @@ export const RecipeForm = ({ recipe, setOpenModal }: Props) => {
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea
-                  rows={8}
                   placeholder="Spaghetti tossed in a spicy marinara sauce (phoenix fire sauce) with sautéed garlic (dragon's breath garlic) and topped with freshly grated Parmesan (griffin cheese) and chopped herbs... 🐉🍝✨"
-                  className="no-scrollbar border-dish-dash-800/50 focus-visible:ring-offset-0 focus-visible:ring-dish-dash-800/50 rounded-sm"
+                  className="sm:h-[120px] no-scrollbar border-dish-dash-800/50 focus-visible:ring-offset-0 focus-visible:ring-dish-dash-800/50 rounded-sm"
                   {...field}
                 />
               </FormControl>
@@ -182,7 +181,7 @@ export const RecipeForm = ({ recipe, setOpenModal }: Props) => {
           <span className="text-red-800 font-semibold text-sm">
             {error ? error : null}
           </span>
-          <div className="space-x-2">
+          <div className="space-x-2 justify-end w-full flex">
             <Button
               onClick={() => setOpenModal(false)}
               className="hover:no-underline"
@@ -193,7 +192,7 @@ export const RecipeForm = ({ recipe, setOpenModal }: Props) => {
             <Button
               disabled={isPending}
               type="submit"
-              className="w-full sm:w-auto bg-dish-dash-950 hover:bg-dish-dash-900 font-bold"
+              className="max-w-[80px] w-full sm:w-auto bg-dish-dash-950 hover:bg-dish-dash-900 font-bold"
             >
               {recipe ? "Edit" : "Create"}
             </Button>
