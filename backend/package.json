@@ -7,7 +7,9 @@
     "dev": "pnpm dlx tsx watch ./src/index.ts",
     "lint": "pnpm dlx eslint",
     "test": "./integration-test.sh",
-    "test:once": "./integration-test.sh --once"
+    "test:once": "./integration-test.sh --once",
+    "start": "node dist/index.js",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
