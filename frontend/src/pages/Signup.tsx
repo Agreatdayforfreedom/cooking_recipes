@@ -38,10 +38,15 @@ const SignupPage = () => {
 
   const onSubmit = async (values: z.infer<typeof signupSchema>) => {
     setPending(true);
-    const response = await api.post("/signup", values);
-    localStorage.setItem("token", response.data.token as string);
-    setUser(response.data.user);
-    setPending(false);
+    try {
+      const response = await api.post("/signup", values);
+      localStorage.setItem("token", response.data.token as string);
+      setUser(response.data.user);
+    } catch (error) {
+      setPending(false);
+    } finally {
+      setPending(false);
+    }
   };
 
   return (

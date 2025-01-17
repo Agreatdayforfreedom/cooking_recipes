@@ -35,10 +35,15 @@ export const LoginPage = () => {
 
   const onSubmit = async (values: z.infer<typeof signinSchema>) => {
     setPending(true);
-    const response = await api.post("/signin", values);
-    localStorage.setItem("token", response.data.token as string);
-    setUser(response.data.user);
-    setPending(false);
+    try {
+      const response = await api.post("/signin", values);
+      localStorage.setItem("token", response.data.token as string);
+      setUser(response.data.user);
+    } catch (error) {
+      setPending(false);
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
@@ -84,7 +89,6 @@ export const LoginPage = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription></FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

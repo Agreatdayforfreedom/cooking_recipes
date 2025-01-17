@@ -1,14 +1,15 @@
 import { z } from "zod";
 
-const ingredientsSchema = z.object({
-  name: z.string(),
-  quantity: z.number(),
-});
-
-export const createRecipeSchema = z.object({
-  title: z.string(),
-  description: z.string(),
-  ingredients: ingredientsSchema,
+export const ingredientsSchema = z
+  .object({
+    name: z.string(),
+    quantity: z.number(),
+  })
+  .array();
+export const recipeFormSchema = z.object({
+  title: z.string().min(1).max(128),
+  description: z.string().min(1).max(1024),
+  ingredients: z.string(), // map later to ingredientsSchema
   image: z.string().optional(),
 });
 
