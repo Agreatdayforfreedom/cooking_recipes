@@ -4,8 +4,14 @@ import cors from "cors";
 import authRouter from "./routes/auth.route";
 import recipeRouter from "./routes/recipes.route";
 import ratingRouter from "./routes/ratings.route";
+import { v2 } from "cloudinary";
+import multer from "multer";
 
 const app = express();
+
+v2.config({
+  secure: true,
+});
 
 app.use(express.json());
 app.use(cors());

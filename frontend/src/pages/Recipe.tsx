@@ -26,7 +26,11 @@ const RecipePage = () => {
   return (
     <div className="w-[90%] sm:w-[75%]  mx-auto">
       <div className="flex flex-col items-center">
-        <img src="/bacontest.jpg" className=" rounded" />
+        {recipe.image ? (
+          <img src={recipe.image} className=" max-h-[400px] w-auto rounded" />
+        ) : (
+          <div>FALLBACK</div>
+        )}
 
         <section className="flex flex-col w-full items-start mt-5 space-y-6">
           <div className="space-y-2 sm:space-y-0 sm:flex w-full items-center justify-between">

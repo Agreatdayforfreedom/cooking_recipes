@@ -35,7 +35,7 @@ model Recipes {
   image       String?
   created_at  DateTime @default(now())
   
-  user        Users    @relation(fields: [userId], references: [id])
+  user        Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int      @map("user_id")
 
   ratings Ratings[]
@@ -50,10 +50,10 @@ model Ratings {
   
   created_at DateTime @default(now())
 
-  user     Users      @relation(fields: [userId], references: [id])
+  user     Users      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   Int        @map("user_id")
 
-  recipe   Recipes    @relation(fields: [recipeId], references: [id])
+  recipe   Recipes    @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId Int        @map("recipe_id")
 
   @@map("ratings")

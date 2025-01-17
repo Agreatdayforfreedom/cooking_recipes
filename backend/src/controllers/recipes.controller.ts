@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import { prisma } from "../prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { createRecipeSchema, updateRecipeSchema } from "../schemas/recipe";
-
+import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
+import { upload_stream } from "../utils/cloudinary";
 export const getAll = async (_req: Request, res: Response) => {
   try {
     const recipes = await prisma.recipes.findMany({
@@ -129,11 +130,24 @@ export const createOne = async (req: Request, res: Response) => {
   const { title, description, ingredients } = data.data;
 
   try {
+    let secure_url = "";
+    if (req.file) {
+      if (req.file.size / (1024 * 1024) >= 2) {
+        return res.status(403).json("Max image size: 2MB");
+      }
+
+      const result = await upload_stream(req.file.buffer);
+
+      if (result?.secure_url) {
+        secure_url = result.secure_url;
+      }
+    }
     const recipe = await prisma.recipes.create({
       data: {
         title,
         description,
         ingredients,
+        image: secure_url,
         userId: req.user.id,
       },
     });
@@ -152,13 +166,37 @@ export const updateOne = async (req: Request, res: Response) => {
   }
 
   try {
+    const recipeExists = await prisma.recipes.findUnique({
+      where: {
+        id: parseInt(req.params.id, 10),
+        userId: req.user.id,
+      },
+    });
+
+    if (!recipeExists) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+    const public_id = recipeExists.image?.split("/").at(-1)?.split(".")[0];
+
+    let secure_url = "";
+    if (req.file) {
+      if (req.file.size / (1024 * 1024) >= 2) {
+        return res.status(403).json("Max image size: 2MB");
+      }
+
+      const result = await upload_stream(req.file.buffer, public_id);
+
+      if (result?.secure_url) {
+        secure_url = result.secure_url;
+      }
+    }
     const recipe = await prisma.recipes.update({
       where: {
         id: parseInt(req.params.id, 10),
         userId: req.user.id,
       },
       // the ingredients is validated with zod z.optional(ingredientsSchema), so the ingredients object is not parsed if the fields don't match.
-      data: data.data,
+      data: { ...data.data, image: secure_url },
     });
 
     res.send({ message: "Updated successfully", recipe });
@@ -174,13 +212,15 @@ export const updateOne = async (req: Request, res: Response) => {
 
 export const deleteOne = async (req: Request, res: Response) => {
   try {
-    await prisma.recipes.delete({
+    const recipe = await prisma.recipes.delete({
       where: {
         id: parseInt(req.params.id, 10),
         userId: req.user.id,
       },
     });
+    const public_id = recipe.image?.split("/").at(-1)?.split(".")[0];
 
+    await cloudinary.uploader.destroy("recipes/" + public_id);
     return res.json({ message: "Deleted successfully" });
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {

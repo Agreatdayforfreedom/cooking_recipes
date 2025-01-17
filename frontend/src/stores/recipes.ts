@@ -21,7 +21,6 @@ export const useRecipes = create<RecipeStore>()((set) => ({
   editRecipe: (recipe: Recipe) =>
     set((state) => {
       let recipes = [...state.recipes].map((r) => {
-        console.log(r.id, recipe.id);
         if (r.id === recipe.id) {
           return {
             ...r,

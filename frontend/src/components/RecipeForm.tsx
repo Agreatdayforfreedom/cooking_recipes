@@ -21,6 +21,8 @@ import { useRecipes } from "../stores/recipes";
 import { ingredients2string, string2ingredients } from "../lib/utils";
 import { AxiosError } from "axios";
 import { Textarea } from "./ui/textarea";
+import UploadImage from "./UploadImage";
+import { Label } from "./ui/label";
 
 interface Props {
   recipe?: Recipe;
@@ -28,6 +30,8 @@ interface Props {
 }
 
 export const RecipeForm = ({ recipe, setOpenModal }: Props) => {
+  const [uploadFileModal, setUploadFileModal] = useState(false);
+  const [file, setFile] = useState<File>();
   const [isPending, setPending] = useState(false);
   const [error, setError] = useState("");
 
@@ -39,7 +43,6 @@ export const RecipeForm = ({ recipe, setOpenModal }: Props) => {
     resolver: zodResolver(recipeFormSchema),
     defaultValues: {
       title: recipe ? recipe.title : "",
-      image: "",
       description: recipe ? recipe.description : "",
       ingredients: recipe ? ingredients2string(recipe.ingredients) : "",
     },
@@ -59,9 +62,20 @@ export const RecipeForm = ({ recipe, setOpenModal }: Props) => {
     try {
       const url = recipe ? `/recipe/update/${recipe.id}` : `/recipe/create`;
       const method = recipe ? "patch" : "post";
-      const response = await api[method](url, {
-        ...values,
-        ingredients: ingredients.data,
+
+      const formData = new FormData();
+
+      formData.append("title", values.title);
+      formData.append("description", values.description);
+      formData.append("ingredients", JSON.stringify(ingredients.data));
+      if (file) {
+        formData.append("file", file);
+      }
+
+      const response = await api[method](url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       if (!recipe) {
         setRecipe(response.data.recipe);
@@ -126,6 +140,25 @@ export const RecipeForm = ({ recipe, setOpenModal }: Props) => {
             </FormItem>
           )}
         />
+
+        <div className="flex flex-col py-2">
+          <Label className="mb-2">Image</Label>
+          <div className="flex items-center space-x-2">
+            <Button
+              className="max-w-[126px]"
+              type="button"
+              onClick={() => setUploadFileModal(true)}
+            >
+              Upload image
+            </Button>
+            {file ? (
+              <span className="text-gray-700 text-sm font-semibold">
+                1 Image ({(file.size / 1024).toFixed(1)}kb)
+              </span>
+            ) : null}
+          </div>
+        </div>
+
         <FormField
           control={form.control}
           name="description"
@@ -167,6 +200,11 @@ export const RecipeForm = ({ recipe, setOpenModal }: Props) => {
           </div>
         </div>
       </form>
+      <UploadImage
+        open={uploadFileModal}
+        setFile={setFile}
+        close={() => setUploadFileModal(false)}
+      />
     </Form>
   );
 };
