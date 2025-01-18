@@ -196,7 +196,7 @@ export const updateOne = async (req: Request, res: Response) => {
         userId: req.user.id,
       },
       // the ingredients is validated with zod z.optional(ingredientsSchema), so the ingredients object is not parsed if the fields don't match.
-      data: { ...data.data, image: secure_url },
+      data: { ...data.data, ...(secure_url && secure_url ? { image: secure_url } : {}) },
     });
 
     res.send({ message: "Updated successfully", recipe });

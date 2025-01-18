@@ -72,11 +72,13 @@ export const RatingForm = ({ ratingToEdit, clearRatingToEdit }: Props) => {
           editRecipeRating(response.data.rating);
         }
       }
+      clearRatingToEdit();
     } catch (error) {
       if (error instanceof AxiosError) {
         setError(error.response?.data.error);
       } else {
         setError("Something went wrong! Try again.");
+        clearRatingToEdit();
       }
     } finally {
       setPending(false);
